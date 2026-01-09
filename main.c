@@ -80,7 +80,6 @@ int main(int argc, char *argv[]){
 
     fseek(file_ptr, header.offset, SEEK_SET);
     for (int i = 0; i < height; i++) {
-        // Read one row of pixels
         size_t read = fread(&image[i * width], sizeof(Pixel), width, file_ptr);
         if (read != (size_t)width) {
             fprintf(stderr, "Error reading pixel data on row %d (expected %d, got %zu)\n", i, width, read);
@@ -89,7 +88,6 @@ int main(int argc, char *argv[]){
             return 1;
         }
 
-        // Skip the padding at the end of the row
         fseek(file_ptr, padding, SEEK_CUR);
     }
     fclose(file_ptr);
@@ -122,7 +120,6 @@ int main(int argc, char *argv[]){
     }
     uint8_t pad_byte = 0;
     for (int i = 0; i < height; i++) {
-        // Write one row of pixels
         if (fwrite(&image[i * width], sizeof(Pixel), width, out) != (size_t)width) {
             fprintf(stderr, "Error writing pixel data on row %d\n", i);
             fclose(out);
@@ -130,7 +127,6 @@ int main(int argc, char *argv[]){
             return 1;
         }
 
-        // Add the padding back so the file remains valid
         for (int p = 0; p < padding; p++) {
             fwrite(&pad_byte, 1, 1, out);
         }
